@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora de Comisiones de Ventas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<div class="app">
+  <!-- Header -->
+  <div class="header">
+    <div>
+      <div class="header-label">Sistema de Comisiones</div>
+      <div class="header-name">Calculadora de Ventas</div>
+    </div>
+    <div class="country-tabs" id="countryTabs">
+      <button class="tab active" data-country="IN">🇮🇳 India</button>
+      <button class="tab"        data-country="US">🇺🇸 EE.UU.</button>
+      <button class="tab"        data-country="UK">🇬🇧 R. Unido</button>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="body">
+    <!-- Input card -->
+    <div class="card">
+      <div class="card-label">Datos de venta</div>
+      <div class="field">
+        <label for="sales">Ventas totales del mes</label>
+        <div class="input-wrap">
+          <span class="curr-sym" id="sym">₹</span>
+          <input type="number" id="sales" placeholder="0.00" min="0" step="0.01" />
+        </div>
+      </div>
+      <div class="field">
+        <label for="disc">Descuentos aplicados</label>
+        <div class="input-wrap">
+          <span class="curr-sym" id="sym2">₹</span>
+          <input type="number" id="disc" placeholder="0.00" min="0" step="0.01" />
+        </div>
+        <div class="error-msg" id="err">Los descuentos no pueden superar las ventas totales.</div>
+      </div>
+    </div>
+
+    <!-- Result card -->
+    <div class="result-card">
+      <div>
+        <div class="result-label">Comisión calculada</div>
+        <div class="result-country">
+          <span id="resFlagTxt">🇮🇳 India</span>
+          <span class="rate-badge" id="rateBadge">10%</span>
+        </div>
+        <div class="commission-val zero" id="commVal">₹ 0.00</div>
+      </div>
+      <div class="net-row">
+        <span class="net-label">Base neta (Ventas − Desc.)</span>
+        <span class="net-val" id="netVal">₹ 0.00</span>
+      </div>
+    </div>
+
+    <!-- Formula -->
+    <div class="formula-row">
+      Fórmula:&nbsp;
+      <span class="formula-hl" id="formula">Comisión = (Ventas − Descuentos) × 10%</span>
+    </div>
+
+    <!-- Breakdown -->
+    <div class="breakdown">
+      <div class="bk"><div class="bk-lbl">Ventas</div><div class="bk-val" id="bkSales">₹ 0.00</div></div>
+      <div class="bk"><div class="bk-lbl">Descuentos</div><div class="bk-val" id="bkDisc">₹ 0.00</div></div>
+      <div class="bk"><div class="bk-lbl">Tasa</div><div class="bk-val" id="bkRate">10%</div></div>
+    </div>
+  </div>
+</div>
+
+<script src="js/countryRates.js"></script>
+<script src="js/validator.js"></script>
+<script src="js/engine.js"></script>
+<script>
+  // ── Estado ──────────────────────────────────────────────
+  let currentCountry = "IN";
+
+  // ── Inicialización ──────────────────────────────────────
+  document.getElementById("countryTabs").addEventListener("click", function (e) {
+    const btn = e.target.closest(".tab");
+    if (!btn) return;
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    btn.classList.add("active");
+    currentCountry = btn.dataset.country;
+    updateCountryUI();
+    calculate();
+  });
+
+  document.getElementById("sales").addEventListener("input", calculate);
+  document.getElementById("disc").addEventListener("input", calculate);
+
+  // ── Actualiza UI al cambiar país ────────────────────────
+  function updateCountryUI() {
+    const cfg = getCountryConfig(currentCountry);
+    document.getElementById("sym").textContent  = cfg.symbol;
+    document.getElementById("sym2").textContent = cfg.symbol;
+    document.getElementById("resFlagTxt").textContent = cfg.flag + " " + cfg.name;
+    document.getElementById("rateBadge").textContent  = cfg.rateDisplay;
+    document.getElementById("formula").textContent =
+      "Comisión = (Ventas − Descuentos) × " + cfg.rateDisplay;
+    document.getElementById("bkRate").textContent = cfg.rateDisplay;
+  }
+
+  // ── Cálculo principal ───────────────────────────────────
+  function calculate() {
+    const cfg  = getCountryConfig(currentCountry);
+    const rawS = parseFloat(document.getElementById("sales").value) || 0;
+    const rawD = parseFloat(document.getElementById("disc").value)  || 0;
+
+    // Validación
+    const { valid, errors } = validateInputs(rawS, rawD);
+    const errEl = document.getElementById("err");
+    errEl.style.display = valid ? "none" : "block";
+    if (!valid) errEl.textContent = errors[0];
+
+    // Cálculo
+    const { netBase, commission } = calculateCommission(rawS, rawD, cfg.rate);
+
+    // Render
+    const fmt = v => cfg.symbol + " " + v.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    document.getElementById("commVal").textContent = fmt(commission);
+    document.getElementById("commVal").className   = "commission-val" + (commission === 0 ? " zero" : "");
+    document.getElementById("netVal").textContent  = fmt(netBase);
+    document.getElementById("bkSales").textContent = fmt(rawS);
+    document.getElementById("bkDisc").textContent  = fmt(rawD);
+  }
+</script>
+</body>
+</html>
