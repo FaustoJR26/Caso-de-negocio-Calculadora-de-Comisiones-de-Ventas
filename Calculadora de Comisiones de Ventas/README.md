@@ -1,12 +1,12 @@
-# 💰 Calculadora de Comisiones de Ventas
+#  Calculadora de Comisiones de Ventas
 
 Aplicación web que permite a los vendedores calcular su comisión mensual según el país en que operan.
 
-## 🌐 Demo rápida
+##  Demo rápida
 
 Abre `index.html` en cualquier navegador moderno — no requiere servidor ni dependencias externas.
 
-## 📐 Reglas de negocio
+##  Reglas de negocio
 
 | País         | Fórmula                                    | Tasa |
 |--------------|--------------------------------------------|------|
@@ -14,7 +14,7 @@ Abre `index.html` en cualquier navegador moderno — no requiere servidor ni dep
 | 🇺🇸 EE.UU.  | (Ventas Totales − Descuentos) × 15%        | 15%  |
 | 🇬🇧 R. Unido | (Ventas Totales − Descuentos) × 12%        | 12%  |
 
-## 🗂️ Estructura del proyecto
+##  Estructura del proyecto
 
 ```
 comisiones-ventas/
@@ -30,7 +30,7 @@ comisiones-ventas/
 └── README.md
 ```
 
-## 🏛️ Arquitectura (3 capas)
+## Arquitectura (3 capas)
 
 ```
 ┌─────────────────────────────────┐
@@ -42,23 +42,23 @@ comisiones-ventas/
 └─────────────────────────────────┘
 ```
 
-## 🚀 Uso
+##  Uso
 
 1. Selecciona tu país en las pestañas superiores.
 2. Ingresa las ventas totales del mes.
 3. Ingresa los descuentos aplicados.
 4. La comisión se calcula automáticamente en tiempo real.
 
-## ✅ Validaciones
+## Validaciones
 
 - Ventas y descuentos deben ser ≥ 0.
 - Los descuentos no pueden superar las ventas totales.
 
-## 📄 Documentación
+## Documentación
 
 Los diagramas de diseño (solución, capas y componentes) se encuentran en `docs/diagramas.docx`.
 
-## 🛠️ Tecnologías
+## Tecnologías
 
 - HTML5 / CSS3 / JavaScript (Vanilla ES6)
 - Sin dependencias externas ni frameworks
