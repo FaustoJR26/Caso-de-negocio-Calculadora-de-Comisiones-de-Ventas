@@ -1,10 +1,10 @@
 /**
  * validator.js
- * Capa de Lógica de Negocio: validación de entradas del vendedor.
+ * Capa de Logica de Negocio: validacion de entradas del vendedor.
  */
 
 /**
- * Valida los datos de entrada antes del cálculo.
+ * Valida los datos de entrada antes del calculo.
  * @param {number} sales   - Ventas totales del mes.
  * @param {number} discounts - Descuentos aplicados.
  * @returns {{ valid: boolean, errors: string[] }}
